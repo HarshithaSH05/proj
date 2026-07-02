@@ -68,3 +68,94 @@ git commit -m ""
 git remote add origin ...
 git remote -v
 git push -u origin main
+
+
+describe('XPath Locator Test', () => {
+    it('should login using XPath', async () => {
+
+        await browser.url('https://www.saucedemo.com/');
+
+        const username = await $('//input[@id="user-name"]');
+        await username.setValue('standard_user');
+
+        const password = await $('//input[@id="password"]');
+        await password.setValue('secret_sauce');
+
+        const loginBtn = await $('//input[@id="login-button"]');
+        await loginBtn.click();
+
+        await browser.pause(5000);
+    });
+});
+
+
+describe('Google search test', () => {
+    it('should open google and verify title', async () => {
+
+        await browser.url('https://www.google.com');
+
+        const title = await browser.getTitle();
+
+        console.log(title);
+
+    });
+});
+
+
+Paste this into `index.html`:
+
+`html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Manager</title>
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h2>Task Manager</h2>
+  <input type="text" id="taskInput" placeholder="Enter a task">
+  <button id="addTask">Add Task</button>
+  
+  <h3>Tasks:</h3>
+  <ul id="taskList"></ul>
+
+  <script src="script.js"></script>
+</body>
+</html>
+```
+
+---
+
+ Step 4: Add jQuery Logic
+Create a new file in the same folder called `script.js` and paste:
+
+javascript
+$(document).ready(function(){
+ 
+  $("#addTask").click(function(){
+    let task = $("#taskInput").val();
+    if(task){
+      $("#taskList").append("<li>" + task + " <button class='remove'>Remove</button></li>");
+      $("#taskInput").val(""); // clear input
+    }
+  });
+  
+  $(document).on("click", ".remove", function(){
+    $(this).parent().remove();
+  });
+
+  
+  function getTasks(){
+    let tasks = [];
+    $("#taskList li").each(function(){
+      tasks.push($(this).text().replace(" Remove",""));
+    });
+    return tasks;
+
+
+  
+  $("#taskList").on("DOMSubtreeModified", function(){
+    console.log("Current Tasks:", getTasks());
+  });
+});
